@@ -20,6 +20,8 @@ public static class CspRpc
     private static Process cspProcess;
     private static string? applicationId = "928158606313000961";
 
+    private const bool fakeRunningCsp = true;
+
     public static async Task Main(string[] args)
     {
         AppDomain.CurrentDomain.ProcessExit += (_, _) => Dispose();
@@ -28,7 +30,7 @@ public static class CspRpc
         Console.WriteLine("Run this instead of CLIP STUDIO PAINT.");
         var started = TryStartCsp();
 
-        if (!started)
+        if (!started && !fakeRunningCsp)
         {
             Console.WriteLine("Something went wrong. Exiting...");
             return;
@@ -60,19 +62,27 @@ public static class CspRpc
             [
                 new Button()
                 {
-                    Label = "CSP",
-                    Url = "https://www.clipstudio.net/en/"
+                    Label = "My Art",
+                    Url = "https://patreon.com/KorOwOne"
                 }
             ],
             Assets = new Assets()
             {
-                LargeImageKey = "paint-new",
-                LargeImageText = "Created by Mia!",
-                SmallImageKey = ""
+                LargeImageKey = "",
+                LargeImageText = "KorOwOne",
+                SmallImageKey = "paint-new",
+                SmallImageText = "CLIP STUDIO PAINT"
             }
         });
 
-        await Monitor();
+        await Task.Run(async () =>
+        {
+            while (true)
+            {
+                CheckProcess();
+                await Task.Delay(_interval, _cts.Token);
+            }
+        });
     }
 
     private static async void RpcClient_OnReady(object sender, ReadyMessage e)
@@ -81,7 +91,7 @@ public static class CspRpc
     }
     private static async void RpcClient_OnPresenceUpdate(object sender, PresenceMessage e)
     {
-        Console.WriteLine($"Received update: '{e.Presence}'.");
+        Console.WriteLine($"Presence updated: '{e.Presence}'.");
     }
 
     private static readonly EnumerationOptions _enumerationOptions = new EnumerationOptions()
@@ -91,6 +101,11 @@ public static class CspRpc
     };
     private static bool TryStartCsp()
     {
+        if (fakeRunningCsp)
+        {
+            return true;
+        }
+
         Console.WriteLine("Discovering CLIP STUDIO PAINT installation(s)...");
         var drives = Environment.GetLogicalDrives();
         string[] programFiles =
@@ -159,19 +174,14 @@ public static class CspRpc
         return cspProcess is not null;
     }
 
-    private static Task Monitor()
-    {
-        return Task.Factory.StartNew(() =>
-        {
-            while (!_cts.Token.WaitHandle.WaitOne(_interval))
-            {
-                CheckProcess();
-            }
-        }, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
-    }
-
     private static void CheckProcess()
     {
+        if (fakeRunningCsp)
+        {
+            Console.WriteLine("Running CSP is being faked to test Rich Presence...", ConsoleColor.DarkYellow);
+            return;
+        }
+
         var pname = Process.GetProcessesByName("CLIPStudioPaint");
         if (pname.Length == 0)
         {
