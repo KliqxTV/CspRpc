@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CspRpc": {
+      "commandName": "Project",
+      "commandLineArgs": "--targetProcess=discord.exe"
+    }
+  }
+}

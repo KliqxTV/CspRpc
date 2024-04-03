@@ -1,22 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net9.0</TargetFramework>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0-windows</TargetFramework>
+        <TargetFramework>net8.0-windows</TargetFramework>
         <ApplicationIcon>zyro-image.ico</ApplicationIcon>
+        <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+        <UseWindowsForms>true</UseWindowsForms>
 
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <PublishSingleFile>true</PublishSingleFile>
         <SelfContained>false</SelfContained>
         <PublishReadyToRun>false</PublishReadyToRun>
         <PublishTrimmed>false</PublishTrimmed>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
     <ItemGroup>
         <Content Include="zyro-image.ico" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="DiscordRichPresence" Version="1.2.1.24" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-preview.2.24128.5" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="System.Drawing.Common" Version="9.0.0-preview.2.24128.3" />
+        <PackageReference Include="System.Management" Version="9.0.0-preview.2.24128.5" />
     </ItemGroup>
 </Project>
